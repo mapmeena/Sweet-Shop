@@ -1,11 +1,9 @@
-// API configuration removed - frontend now uses mock data
-// This file is kept for compatibility but is no longer used
+// Axios instance for API calls
+import axios from 'axios';
 
-const api = {
-  get: () => Promise.resolve({ data: [] }),
-  post: () => Promise.resolve({ data: {} }),
-  put: () => Promise.resolve({ data: {} }),
-  delete: () => Promise.resolve({ data: {} }),
-};
+const api = axios.create({
+  baseURL: 'http://localhost:5000',
+  withCredentials: false,
+});
 
 export default api;

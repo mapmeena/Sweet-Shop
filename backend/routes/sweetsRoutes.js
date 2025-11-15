@@ -1,12 +1,21 @@
-// Step 8: Sweets routes
 const express = require('express');
 const router = express.Router();
-const sweetsController = require('../controllers/sweetsController');
-const auth = require('../middleware/auth');
+const {
+  getAllSweets,
+  getSweet,
+  createSweet,
+  updateSweet,
+  deleteSweet
+} = require('../controllers/sweetsController');
+const { protect } = require('../middleware/auth');
 
-router.get('/', sweetsController.getSweets);
-router.post('/', auth, sweetsController.createSweet);
-router.put('/:id', auth, sweetsController.updateSweet);
-router.delete('/:id', auth, sweetsController.deleteSweet);
+// Public routes
+router.get('/', getAllSweets);
+router.get('/:id', getSweet);
+
+// Private routes (require authentication)
+router.post('/', protect, createSweet);
+router.put('/:id', protect, updateSweet);
+router.delete('/:id', protect, deleteSweet);
 
 module.exports = router;

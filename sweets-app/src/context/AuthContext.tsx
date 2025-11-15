@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
+import axios from 'axios';
+import api from '../api';
 
 export interface User {
   id: string
@@ -22,51 +24,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Login using local storage only (no backend)
+  // Login using backend API
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Mock user - in real app this would validate credentials
-      const mockUser = {
-        id: '1',
-        username: email.split('@')[0],
-        email: email,
-        role: email.includes('admin') ? 'admin' as const : 'user' as const,
+      // POST to backend login endpoint
+      const res = await api.post('/api/auth/login', { email, password });
+      const { token, user } = res.data;
+      const userData: User = {
+        id: user.id,
+        username: user.name,
+        email: user.email,
+        role: user.is_admin ? 'admin' : 'user',
       };
-      
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      localStorage.setItem('token', 'mock-token-' + Date.now());
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', token);
     } catch (err: unknown) {
-      alert('Login failed');
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.error || 'Login failed');
+      } else {
+        alert('Login failed');
+      }
     } finally {
       setIsLoading(false);
     }
   }
 
-  // Register using local storage only (no backend)
+  // Register using backend API
   const register = async (username: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Mock user creation
-      const mockUser = {
-        id: Date.now().toString(),
-        username: username,
-        email: email,
-        role: 'user' as const,
+      // POST to backend register endpoint
+      const res = await api.post('/api/auth/register', { name: username, email, password });
+      const { token, user } = res.data;
+      const userData: User = {
+        id: user.id,
+        username: user.name,
+        email: user.email,
+        role: user.is_admin ? 'admin' : 'user',
       };
-      
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      localStorage.setItem('token', 'mock-token-' + Date.now());
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', token);
     } catch (err: unknown) {
-      alert('Registration failed');
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.error || 'Registration failed');
+      } else {
+        alert('Registration failed');
+      }
     } finally {
       setIsLoading(false);
     }

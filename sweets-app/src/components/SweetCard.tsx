@@ -22,10 +22,8 @@ export default function SweetCard({ sweet, onPurchase }: SweetCardProps) {
     if (sweet.quantity <= 0 || quantity <= 0) return
 
     setIsPurchasing(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 600))
+    await new Promise((resolve) => setTimeout(resolve, 800))
 
-    // Update inventory
     updateSweet(sweet.id, { quantity: sweet.quantity - quantity })
     
     setShowSuccess(true)
@@ -34,82 +32,137 @@ export default function SweetCard({ sweet, onPurchase }: SweetCardProps) {
     setTimeout(() => {
       setShowSuccess(false)
       setQuantity(1)
-    }, 2000)
+    }, 3000)
 
     setIsPurchasing(false)
   }
 
-  const isPurchaseDisabled = sweet.quantity === 0 || quantity === 0
+  const isLowStock = sweet.quantity > 0 && sweet.quantity < 5
+  const totalPrice = sweet.price * quantity
 
   return (
-    <div className="sweet-card">
-      {showSuccess && <div className="success-notification">✓ Order placed!</div>}
+    <div className={`sweet-card-premium ${sweet.quantity === 0 ? 'out-of-stock-card' : ''}`}>
+      {/* Success Toast */}
+      {showSuccess && (
+        <div className="success-toast fade-in">
+          <span className="success-icon">✓</span>
+          Order Placed Successfully!
+        </div>
+      )}
       
-      <div className="sweet-image-container">
-        <div className="sweet-image">{sweet.image}</div>
-        {sweet.quantity === 0 && <div className="out-of-stock">Out of Stock</div>}
-        <span className="quantity-badge">{sweet.quantity} left</span>
+      {/* Card Image Section */}
+      <div className="card-image-section">
+        <div className="card-gradient-bg"></div>
+        <div className="sweet-emoji-large">{sweet.image}</div>
+        
+        {/* Badges */}
+        {sweet.quantity === 0 && (
+          <div className="badge badge-sold-out">SOLD OUT</div>
+        )}
+        {isLowStock && (
+          <div className="badge badge-low-stock">Only {sweet.quantity} Left!</div>
+        )}
+        
+        {/* Category Chip */}
+        <div className="category-chip">{sweet.category}</div>
       </div>
 
-      <div className="sweet-content">
-        <h3 className="sweet-name">{sweet.name}</h3>
-        <p className="sweet-description">{sweet.description}</p>
-        
-        <div className="sweet-category">
-          <span className="category-tag">{sweet.category}</span>
+      {/* Card Content */}
+      <div className="card-content-premium">
+        <div className="card-header-premium">
+          <h3 className="sweet-title-premium">{sweet.name}</h3>
+          <div className="price-tag-premium">
+            <span className="currency">₹</span>
+            <span className="price-amount">{sweet.price}</span>
+          </div>
         </div>
 
-        <div className="sweet-footer">
-          <span className="sweet-price">₹{sweet.price}</span>
+        <p className="sweet-description-premium">{sweet.description}</p>
+
+        {/* Stock Info */}
+        <div className="stock-info-bar">
+          <div className="stock-label">
+            <span className="stock-icon">📦</span>
+            Stock Available
+          </div>
+          <div className="stock-bar">
+            <div 
+              className="stock-fill"
+              style={{ 
+                width: `${Math.min((sweet.quantity / 20) * 100, 100)}%`,
+                backgroundColor: sweet.quantity < 5 ? '#f44336' : '#4caf50'
+              }}
+            ></div>
+          </div>
+          <span className="stock-count">{sweet.quantity} units</span>
         </div>
 
-        {sweet.quantity > 0 && (
-          <div className="purchase-section">
-            <div className="quantity-selector">
+        {/* Purchase Section */}
+        {sweet.quantity > 0 ? (
+          <div className="purchase-section-premium">
+            <div className="quantity-control-premium">
               <button
-                className="qty-btn"
+                className="qty-btn-premium minus"
                 onClick={() => handleQuantityChange(quantity - 1)}
                 disabled={quantity <= 1 || isPurchasing}
+                aria-label="Decrease quantity"
               >
                 −
               </button>
-              <input
-                type="number"
-                min="1"
-                max={sweet.quantity}
-                value={quantity}
-                onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
-                className="qty-input"
-                disabled={isPurchasing}
-              />
+              <div className="qty-display">
+                <input
+                  type="number"
+                  min="1"
+                  max={sweet.quantity}
+                  value={quantity}
+                  onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+                  className="qty-input-premium"
+                  disabled={isPurchasing}
+                  aria-label="Quantity"
+                />
+              </div>
               <button
-                className="qty-btn"
+                className="qty-btn-premium plus"
                 onClick={() => handleQuantityChange(quantity + 1)}
                 disabled={quantity >= sweet.quantity || isPurchasing}
+                aria-label="Increase quantity"
               >
                 +
               </button>
             </div>
 
             <button
-              className="purchase-button"
+              className="purchase-btn-premium"
               onClick={handlePurchase}
-              disabled={isPurchaseDisabled || isPurchasing}
+              disabled={isPurchasing}
             >
-              {isPurchasing ? '⏳ Ordering...' : '🛒 Purchase'}
+              {isPurchasing ? (
+                <>
+                  <span className="btn-spinner"></span>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <span className="cart-icon">🛒</span>
+                  Add to Cart
+                </>
+              )}
             </button>
+
+            <div className="total-price-display">
+              <span className="total-label">Total:</span>
+              <span className="total-amount">₹{totalPrice.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+        ) : (
+          <div className="sold-out-section">
+            <button className="sold-out-btn" disabled>
+              <span>😞</span>
+              Currently Unavailable
+            </button>
+            <p className="notify-text">We'll restock soon!</p>
           </div>
         )}
-
-        {sweet.quantity === 0 && (
-          <button className="purchase-button disabled-btn" disabled>
-            ✕ Out of Stock
-          </button>
-        )}
-
-        <div className="price-breakdown">
-          <small>Total: ₹{sweet.price * quantity}</small>
-        </div>
       </div>
     </div>
   )

@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useState, type ReactNode } from 'react'
+import axios from 'axios';
+import api from '../api';
 
 export interface Sweet {
-  id: number
+  id: string | number
   name: string
   price: number
   quantity: number
@@ -13,9 +15,9 @@ export interface Sweet {
 interface SweetContextType {
   sweets: Sweet[]
   addSweet: (sweet: Omit<Sweet, 'id'>) => void
-  updateSweet: (id: number, sweet: Partial<Sweet>) => void
-  deleteSweet: (id: number) => void
-  getSweet: (id: number) => Sweet | undefined
+  updateSweet: (id: number | string, sweet: Partial<Sweet>) => void
+  deleteSweet: (id: number | string) => void
+  getSweet: (id: number | string) => Sweet | undefined
 }
 
 const SweetContext = createContext<SweetContextType | undefined>(undefined)
@@ -36,31 +38,76 @@ const initialSweets: Sweet[] = [
 ]
 
 export function SweetProvider({ children }: { children: ReactNode }) {
-  // Use mock data instead of backend API
-  const [sweets, setSweets] = useState<Sweet[]>(initialSweets);
+  const [sweets, setSweets] = useState<Sweet[]>([]);
 
-  // Add sweet using local state (no backend)
-  const addSweet = (sweet: Omit<Sweet, 'id'>) => {
-    const newSweet = {
-      ...sweet,
-      id: Math.max(...sweets.map(s => s.id), 0) + 1
-    };
-    setSweets((prev) => [...prev, newSweet]);
+  // Fetch sweets from backend API
+  const fetchSweets = async () => {
+    try {
+      const res = await api.get('/api/sweets');
+      // Map MongoDB _id to id for frontend compatibility
+      const sweetsData = res.data.map((sweet: any) => ({
+        ...sweet,
+        id: sweet._id || sweet.id
+      }));
+      setSweets(sweetsData);
+    } catch (err) {
+      console.error('Failed to fetch sweets:', err);
+    }
   };
 
-  // Update sweet using local state (no backend)
-  const updateSweet = (id: number, updates: Partial<Sweet>) => {
-    setSweets((prev) => prev.map((sweet) => 
-      sweet.id === id ? { ...sweet, ...updates } : sweet
-    ));
+  // Add sweet using backend API (JWT required)
+  const addSweet = async (sweet: Omit<Sweet, 'id'>) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await api.post('/api/sweets', sweet, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const newSweet = { ...res.data, id: res.data._id || res.data.id };
+      setSweets((prev) => [...prev, newSweet]);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.error || 'Failed to add sweet');
+      }
+    }
   };
 
-  // Delete sweet using local state (no backend)
-  const deleteSweet = (id: number) => {
-    setSweets((prev) => prev.filter((sweet) => sweet.id !== id));
+  // Update sweet using backend API (JWT required)
+  const updateSweet = async (id: number | string, updates: Partial<Sweet>) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await api.put(`/api/sweets/${id}`, updates, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const updatedSweet = { ...res.data, id: res.data._id || res.data.id };
+      setSweets((prev) => prev.map((sweet) => sweet.id == id ? updatedSweet : sweet));
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.error || 'Failed to update sweet');
+      }
+    }
   };
 
-  const getSweet = (id: number) => sweets.find((sweet) => sweet.id === id);
+  // Delete sweet using backend API (JWT required)
+  const deleteSweet = async (id: number | string) => {
+    try {
+      const token = localStorage.getItem('token');
+      await api.delete(`/api/sweets/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSweets((prev) => prev.filter((sweet) => sweet.id != id));
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.error || 'Failed to delete sweet');
+      }
+    }
+  };
+
+  const getSweet = (id: number | string) => sweets.find((sweet) => sweet.id == id);
+
+  // Fetch sweets on mount
+  React.useEffect(() => {
+    fetchSweets();
+  }, []);
 
   return (
     <SweetContext.Provider value={{ sweets, addSweet, updateSweet, deleteSweet, getSweet }}>

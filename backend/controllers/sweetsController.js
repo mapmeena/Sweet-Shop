@@ -1,43 +1,99 @@
-// Step 8: Sweets controller for CRUD
 const Sweet = require('../models/Sweet');
 
-exports.getSweets = async (req, res) => {
+// @desc    Get all sweets
+// @route   GET /api/sweets
+// @access  Public
+exports.getAllSweets = async (req, res) => {
   try {
-    const sweets = await Sweet.find();
+    const sweets = await Sweet.find().sort({ createdAt: -1 });
     res.json(sweets);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Get sweets error:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.createSweet = async (req, res) => {
-  const { name, description, price, category, image_url, created_by } = req.body;
+// @desc    Get single sweet
+// @route   GET /api/sweets/:id
+// @access  Public
+exports.getSweet = async (req, res) => {
   try {
-    const sweet = new Sweet({ name, description, price, category, image_url, created_by });
-    await sweet.save();
-    res.status(201).json(sweet);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-};
-
-exports.updateSweet = async (req, res) => {
-  const { id } = req.params;
-  const { name, description, price, category, image_url } = req.body;
-  try {
-    const sweet = await Sweet.findByIdAndUpdate(id, { name, description, price, category, image_url }, { new: true });
+    const sweet = await Sweet.findById(req.params.id);
+    
+    if (!sweet) {
+      return res.status(404).json({ error: 'Sweet not found' });
+    }
+    
     res.json(sweet);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    console.error('Get sweet error:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.deleteSweet = async (req, res) => {
-  const { id } = req.params;
+// @desc    Create sweet
+// @route   POST /api/sweets
+// @access  Private
+exports.createSweet = async (req, res) => {
   try {
-    await Sweet.findByIdAndDelete(id);
-    res.json({ message: 'Sweet deleted' });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    const { name, description, price, quantity, category, image } = req.body;
+
+    const sweet = await Sweet.create({
+      name,
+      description,
+      price,
+      quantity,
+      category,
+      image: image || '🍬',
+      createdBy: req.user._id
+    });
+
+    res.status(201).json(sweet);
+  } catch (error) {
+    console.error('Create sweet error:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// @desc    Update sweet
+// @route   PUT /api/sweets/:id
+// @access  Private
+exports.updateSweet = async (req, res) => {
+  try {
+    const sweet = await Sweet.findById(req.params.id);
+
+    if (!sweet) {
+      return res.status(404).json({ error: 'Sweet not found' });
+    }
+
+    const updatedSweet = await Sweet.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    res.json(updatedSweet);
+  } catch (error) {
+    console.error('Update sweet error:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// @desc    Delete sweet
+// @route   DELETE /api/sweets/:id
+// @access  Private
+exports.deleteSweet = async (req, res) => {
+  try {
+    const sweet = await Sweet.findById(req.params.id);
+
+    if (!sweet) {
+      return res.status(404).json({ error: 'Sweet not found' });
+    }
+
+    await Sweet.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Sweet removed' });
+  } catch (error) {
+    console.error('Delete sweet error:', error);
+    res.status(500).json({ error: error.message });
   }
 };
