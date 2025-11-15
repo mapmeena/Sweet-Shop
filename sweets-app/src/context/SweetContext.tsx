@@ -23,18 +23,18 @@ interface SweetContextType {
 const SweetContext = createContext<SweetContextType | undefined>(undefined)
 
 const initialSweets: Sweet[] = [
-  { id: 1, name: 'Gulab Jamun Box', price: 550, quantity: 15, image: '🍩', description: 'Delicious milk solids dumplings in sugar syrup', category: 'Traditional' },
-  { id: 2, name: 'Barfi Assortment', price: 650, quantity: 20, image: '🍬', description: 'Mixed milk fudge varieties', category: 'Fudge' },
-  { id: 3, name: 'Rasgulla Pack', price: 600, quantity: 18, image: '🥟', description: 'Soft cheese balls in sugar syrup', category: 'Traditional' },
-  { id: 4, name: 'Laddu Collection', price: 700, quantity: 12, image: '🔴', description: 'Golden fried balls with nuts', category: 'Balls' },
-  { id: 5, name: 'Jalebi Special', price: 750, quantity: 25, image: '🌀', description: 'Crispy orange spirals', category: 'Fried' },
-  { id: 6, name: 'Kheer Mix', price: 800, quantity: 14, image: '🥛', description: 'Rice pudding with dry fruits', category: 'Traditional' },
-  { id: 7, name: 'Halwa Deluxe', price: 900, quantity: 10, image: '🍂', description: 'Premium carrot halwa', category: 'Cooked' },
-  { id: 8, name: 'Mithai Premium Pack', price: 1200, quantity: 8, image: '🎁', description: 'Assorted premium sweets collection', category: 'Mixed' },
-  { id: 9, name: 'Royal Pedha', price: 850, quantity: 16, image: '🧁', description: 'Traditional milk fudge cubes', category: 'Fudge' },
-  { id: 10, name: 'Honey Cashew Box', price: 1100, quantity: 11, image: '💰', description: 'Cashew brittle with honey', category: 'Premium' },
-  { id: 11, name: 'Silk Burfi', price: 950, quantity: 13, image: '⬜', description: 'Smooth melt-in-mouth texture', category: 'Fudge' },
-  { id: 12, name: 'Grand Celebration', price: 1500, quantity: 6, image: '👑', description: 'Ultimate sweets hamper', category: 'Premium' },
+  { id: 1, name: 'Gulab Jamun Box', price: 550, quantity: 15, image: 'https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=400&h=300&fit=crop', description: 'Delicious milk solids dumplings in sugar syrup', category: 'Traditional' },
+  { id: 2, name: 'Barfi Assortment', price: 650, quantity: 20, image: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=400&h=300&fit=crop', description: 'Mixed milk fudge varieties', category: 'Fudge' },
+  { id: 3, name: 'Rasgulla Pack', price: 600, quantity: 18, image: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?w=400&h=300&fit=crop', description: 'Soft cheese balls in sugar syrup', category: 'Traditional' },
+  { id: 4, name: 'Laddu Collection', price: 700, quantity: 12, image: 'https://images.unsplash.com/photo-1591980441666-8b8c5092a8e1?w=400&h=300&fit=crop', description: 'Golden fried balls with nuts', category: 'Balls' },
+  { id: 5, name: 'Jalebi Special', price: 750, quantity: 25, image: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=400&h=300&fit=crop', description: 'Crispy orange spirals', category: 'Fried' },
+  { id: 6, name: 'Kheer Mix', price: 800, quantity: 14, image: 'https://images.unsplash.com/photo-1623046326372-a192c4c4c3ca?w=400&h=300&fit=crop', description: 'Rice pudding with dry fruits', category: 'Traditional' },
+  { id: 7, name: 'Halwa Deluxe', price: 900, quantity: 10, image: 'https://images.unsplash.com/photo-1596040033229-a0b927c62f15?w=400&h=300&fit=crop', description: 'Premium carrot halwa', category: 'Cooked' },
+  { id: 8, name: 'Mithai Premium Pack', price: 1200, quantity: 8, image: 'https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=400&h=300&fit=crop', description: 'Assorted premium sweets collection', category: 'Mixed' },
+  { id: 9, name: 'Royal Pedha', price: 850, quantity: 16, image: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=400&h=300&fit=crop', description: 'Traditional milk fudge cubes', category: 'Fudge' },
+  { id: 10, name: 'Honey Cashew Box', price: 1100, quantity: 11, image: 'https://images.unsplash.com/photo-1605807646983-377bc5a76493?w=400&h=300&fit=crop', description: 'Cashew brittle with honey', category: 'Premium' },
+  { id: 11, name: 'Silk Burfi', price: 950, quantity: 13, image: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=400&h=300&fit=crop', description: 'Smooth melt-in-mouth texture', category: 'Fudge' },
+  { id: 12, name: 'Grand Celebration', price: 1500, quantity: 6, image: 'https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=400&h=300&fit=crop', description: 'Ultimate sweets hamper', category: 'Premium' },
 ]
 
 export function SweetProvider({ children }: { children: ReactNode }) {

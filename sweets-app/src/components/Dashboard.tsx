@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useSweets } from '../context/SweetContext'
+import { useCart } from '../context/CartContext'
 import SweetCard from './SweetCard'
 import AdminPanel from './AdminPanel'
+import Cart from './Cart'
 import '../styles/Dashboard.css'
 
 export default function Dashboard() {
@@ -12,7 +14,9 @@ export default function Dashboard() {
   const [priceRange, setPriceRange] = useState({ min: 500, max: 1500 })
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [showAdminPanel, setShowAdminPanel] = useState(false)
+  const [showCart, setShowCart] = useState(false)
   const [purchaseCount, setPurchaseCount] = useState(0)
+  const { getCartCount } = useCart()
 
   // Get unique categories
   const categories = useMemo(() => {
@@ -49,6 +53,12 @@ export default function Dashboard() {
         <div className="header-content">
           <h1 className="logo">🍬 Sweet Haven</h1>
           <div className="header-right">
+            <button className="cart-icon-btn" onClick={() => setShowCart(true)}>
+              🛒
+              {getCartCount() > 0 && (
+                <span className="cart-badge">{getCartCount()}</span>
+              )}
+            </button>
             <span className="user-info">
               👤 {user?.username} ({user?.role})
             </span>
@@ -166,6 +176,9 @@ export default function Dashboard() {
       <footer className="dashboard-footer">
         <p>&copy; 2024 Sweet Haven. All rights reserved.</p>
       </footer>
+
+      {/* Cart Modal */}
+      {showCart && <Cart onClose={() => setShowCart(false)} />}
     </div>
   )
 }

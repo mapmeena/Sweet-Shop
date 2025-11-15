@@ -1,4 +1,4 @@
-/* Premium Dashboard Design - ChatGPT Level */
+/* Zomato-Style Vibrant Dashboard */
 .dashboard {
   min-height: 100vh;
   background: var(--gradient-bg);
@@ -6,16 +6,15 @@
   flex-direction: column;
 }
 
-/* Premium Header */
+/* Zomato-Style Header */
 .dashboard-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  padding: 1.5rem 2rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  background: white;
+  padding: 1.25rem 2rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border);
 }
 
 .header-content {
@@ -28,13 +27,10 @@
 }
 
 .logo {
-  font-size: 2rem;
-  font-weight: 800;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -0.5px;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: -1px;
 }
 
 .header-right {
@@ -43,47 +39,94 @@
   gap: 1rem;
 }
 
+/* Cart Icon Button */
+.cart-icon-btn {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.cart-icon-btn:hover {
+  background: var(--primary-dark);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-red);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--secondary);
+  color: var(--dark);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  border: 3px solid white;
+  animation: pulse 2s infinite;
+}
+
 .user-info {
-  padding: 0.75rem 1.25rem;
+  padding: 0.6rem 1.25rem;
   background: var(--light);
-  border-radius: 50px;
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--dark);
 }
 
 .admin-button {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0.7rem 1.5rem;
+  background: var(--dark);
   color: white;
   border: none;
-  border-radius: 50px;
-  font-weight: 600;
+  border-radius: 8px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .admin-button:hover {
+  background: #000000;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .logout-button {
-  padding: 0.75rem 1.5rem;
-  background: var(--gradient-primary);
+  padding: 0.7rem 1.5rem;
+  background: var(--primary);
   color: white;
   border: none;
-  border-radius: 50px;
-  font-weight: 600;
+  border-radius: 8px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .logout-button:hover {
+  background: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4);
+  box-shadow: var(--shadow-red);
 }
 
 /* Main Content */
@@ -91,40 +134,53 @@
   flex: 1;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  padding: 2.5rem 2rem;
   width: 100%;
 }
 
-/* Search and Filter Section */
+/* Search and Filter - Zomato Style */
 .search-filter-section {
   background: white;
   padding: 2rem;
-  border-radius: 24px;
-  margin-bottom: 3rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-  animation: fadeIn 0.6s ease-out;
+  border-radius: 16px;
+  margin-bottom: 2.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  animation: fadeIn 0.5s ease-out;
 }
 
 .search-box {
   margin-bottom: 2rem;
+  position: relative;
+}
+
+.search-box::before {
+  content: '🔍';
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  z-index: 1;
 }
 
 .search-input {
   width: 100%;
-  padding: 1.25rem 1.5rem;
-  padding-left: 3rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 16px;
-  font-size: 1.05rem;
+  padding: 1.1rem 1.5rem;
+  padding-left: 3.5rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-size: 1rem;
   transition: all 0.3s ease;
   background: var(--light);
+  font-weight: 500;
 }
 
 .search-input:focus {
   outline: none;
   border-color: var(--primary);
   background: white;
-  box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.1);
+  box-shadow: 0 0 0 4px rgba(226, 55, 68, 0.1);
 }
 
 .filters {
@@ -140,12 +196,14 @@
 }
 
 .filter-group label {
-  font-weight: 700;
+  font-weight: 800;
   color: var(--dark);
   font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Category Buttons */
+/* Category Buttons - Zomato Style */
 .category-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -153,15 +211,17 @@
 }
 
 .category-btn {
-  padding: 0.75rem 1.5rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 50px;
+  padding: 0.7rem 1.5rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
   background: white;
   color: var(--dark);
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .category-btn:hover {
@@ -171,13 +231,13 @@
 }
 
 .category-btn.active {
-  background: var(--gradient-primary);
+  background: var(--primary);
   color: white;
-  border-color: transparent;
-  box-shadow: 0 4px 16px rgba(255, 107, 157, 0.3);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(226, 55, 68, 0.3);
 }
 
-/* Price Range */
+/* Price Range - Zomato Style */
 .price-range {
   display: flex;
   gap: 1rem;
@@ -187,28 +247,27 @@
 .range-input {
   flex: 1;
   -webkit-appearance: none;
-  appearance: none;
-  height: 8px;
-  border-radius: 5px;
-  background: linear-gradient(to right, var(--primary) 0%, var(--primary) 50%, #e0e0e0 50%, #e0e0e0 100%);
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
   outline: none;
   cursor: pointer;
 }
 
 .range-input::-webkit-slider-thumb {
   -webkit-appearance: none;
-  appearance: none;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: var(--gradient-primary);
+  background: var(--primary);
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
+  box-shadow: 0 2px 8px rgba(226, 55, 68, 0.4);
   transition: transform 0.2s ease;
 }
 
 .range-input::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
+  transform: scale(1.3);
+  background: var(--primary-dark);
 }
 
 /* Results Header */
@@ -217,43 +276,42 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  padding: 0 0.5rem;
 }
 
 .results-count {
   font-size: 1.05rem;
   color: var(--gray);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .purchase-count {
   color: var(--primary);
-  font-weight: 700;
+  font-weight: 900;
 }
 
-/* Products Section */
+/* Products Grid - Zomato Layout */
 .products-section {
-  animation: fadeIn 0.8s ease-out;
+  animation: fadeIn 0.6s ease-out;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
 }
 
 /* No Results */
 .no-results {
   text-align: center;
-  padding: 6rem 2rem;
+  padding: 5rem 2rem;
   background: white;
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
 }
 
 .no-results p:first-child {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: 900;
   color: var(--dark);
   margin-bottom: 1rem;
 }
@@ -261,47 +319,51 @@
 .no-results p:last-child {
   font-size: 1.1rem;
   color: var(--gray);
+  font-weight: 500;
 }
 
-/* Footer */
+/* Footer - Zomato Style */
 .dashboard-footer {
-  background: rgba(255, 255, 255, 0.95);
+  background: white;
   padding: 2rem;
   text-align: center;
   color: var(--gray);
-  margin-top: auto;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: 3rem;
+  border-top: 1px solid var(--border);
 }
 
 .dashboard-footer p {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
   .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
   }
 }
 
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
-    align-items: stretch;
     gap: 1rem;
   }
 
   .header-right {
-    flex-direction: column;
-    gap: 0.75rem;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .admin-button,
   .logout-button,
   .user-info {
-    width: 100%;
+    flex: 1;
+    min-width: 150px;
     text-align: center;
+    justify-content: center;
   }
 
   .products-grid {
@@ -310,24 +372,31 @@
   }
 
   .category-buttons {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .category-btn {
-    width: 100%;
+    justify-content: center;
   }
 
   .dashboard-main {
     padding: 2rem 1rem;
   }
+
+  .search-filter-section {
+    padding: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
   .logo {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
   }
 
-  .search-filter-section {
-    padding: 1.5rem;
+  .header-right {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .admin-button,
+  .logout-button,
+  .user-info {
+    width: 100%;
   }
 }

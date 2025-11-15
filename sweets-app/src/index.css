@@ -5,30 +5,36 @@
 }
 
 :root {
-  /* Beautiful Color Palette */
-  --primary: #ff6b9d;
-  --primary-dark: #e91e63;
-  --secondary: #c2185b;
-  --accent: #ffc107;
-  --success: #4caf50;
-  --danger: #f44336;
+  /* Zomato-Inspired Vibrant Colors */
+  --primary: #E23744;
+  --primary-dark: #CB202D;
+  --primary-light: #FF5A5F;
+  --secondary: #FFD700;
+  --accent: #FF9F1C;
+  --success: #48C479;
+  --danger: #E23744;
+  --warning: #FFB800;
   
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #ff6b9d 0%, #c2185b 100%);
-  --gradient-card: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-bg: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  /* Vibrant Gradients */
+  --gradient-primary: linear-gradient(135deg, #E23744 0%, #CB202D 100%);
+  --gradient-hero: linear-gradient(135deg, #FF6B6B 0%, #E23744 50%, #CB202D 100%);
+  --gradient-card: linear-gradient(135deg, #FFD89B 0%, #FF9F1C 100%);
+  --gradient-bg: linear-gradient(180deg, #FFFFFF 0%, #FFF8F0 100%);
+  --gradient-overlay: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
   
   /* Neutrals */
-  --white: #ffffff;
-  --light: #f8f9fa;
-  --gray: #6c757d;
-  --dark: #212529;
+  --white: #FFFFFF;
+  --light: #F8F9FA;
+  --gray: #696969;
+  --dark: #1C1C1C;
+  --border: #E8E8E8;
   
-  /* Shadows */
-  --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-  --shadow-lg: 0 10px 20px rgba(0,0,0,0.15);
-  --shadow-xl: 0 20px 40px rgba(0,0,0,0.2);
+  /* Shadows - Zomato Style */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --shadow-xl: 0 16px 48px rgba(226, 55, 68, 0.15);
+  --shadow-red: 0 8px 24px rgba(226, 55, 68, 0.3);
 }
 
 html,
@@ -41,10 +47,10 @@ body,
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Okra', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
+  line-height: 1.5;
   background: var(--gradient-bg);
   color: var(--dark);
 }
@@ -52,11 +58,12 @@ body {
 a {
   color: var(--primary);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 a:hover {
   color: var(--primary-dark);
+  transform: translateY(-1px);
 }
 
 button {
@@ -64,21 +71,20 @@ button {
   cursor: pointer;
   border: none;
   outline: none;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+button:hover:not(:disabled) {
+  transform: translateY(-3px);
 }
 
-button:active {
-  transform: translateY(0);
+button:active:not(:disabled) {
+  transform: translateY(-1px);
 }
 
-/* Scrollbar Styling */
+/* Zomato-Style Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
@@ -87,18 +93,19 @@ button:active {
 
 ::-webkit-scrollbar-thumb {
   background: var(--gradient-primary);
-  border-radius: 5px;
+  border-radius: 6px;
+  border: 2px solid var(--light);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-dark);
 }
 
-/* Animations */
+/* Vibrant Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -109,12 +116,59 @@ button:active {
 @keyframes slideIn {
   from {
     transform: translateX(-100%);
+    opacity: 0;
   }
   to {
     transform: translateX(0);
+    opacity: 1;
   }
 }
 
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
 .fade-in {
-  animation: fadeIn 0.6s ease-out;
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-in {
+  animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scale-in {
+  animation: scaleIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Selection Color */
+::selection {
+  background: var(--primary);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--primary);
+  color: white;
 }

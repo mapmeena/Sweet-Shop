@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useSweets, type Sweet } from '../context/SweetContext'
+import { type Sweet } from '../context/SweetContext'
+import { useCart } from '../context/CartContext'
 import '../styles/SweetCard.css'
 
 interface SweetCardProps {
@@ -8,160 +9,151 @@ interface SweetCardProps {
 }
 
 export default function SweetCard({ sweet, onPurchase }: SweetCardProps) {
-  const { updateSweet } = useSweets()
+  const { addToCart } = useCart()
   const [quantity, setQuantity] = useState(1)
-  const [isPurchasing, setIsPurchasing] = useState(false)
+  const [isAdding, setIsAdding] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   const handleQuantityChange = (value: number) => {
     const newQuantity = Math.max(1, Math.min(value, sweet.quantity))
     setQuantity(newQuantity)
   }
 
-  const handlePurchase = async () => {
+  const handleAddToCart = () => {
     if (sweet.quantity <= 0 || quantity <= 0) return
 
-    setIsPurchasing(true)
-    await new Promise((resolve) => setTimeout(resolve, 800))
-
-    updateSweet(sweet.id, { quantity: sweet.quantity - quantity })
+    setIsAdding(true)
+    
+    // Add to cart
+    addToCart(sweet, quantity)
     
     setShowSuccess(true)
-    onPurchase()
+    setQuantity(1)
     
     setTimeout(() => {
       setShowSuccess(false)
-      setQuantity(1)
-    }, 3000)
-
-    setIsPurchasing(false)
+      setIsAdding(false)
+    }, 2000)
   }
 
   const isLowStock = sweet.quantity > 0 && sweet.quantity < 5
   const totalPrice = sweet.price * quantity
+  const discount = sweet.quantity < 5 ? 10 : 0
 
   return (
-    <div className={`sweet-card-premium ${sweet.quantity === 0 ? 'out-of-stock-card' : ''}`}>
+    <div className={`zomato-card ${sweet.quantity === 0 ? 'sold-out' : ''}`}>
       {/* Success Toast */}
       {showSuccess && (
-        <div className="success-toast fade-in">
-          <span className="success-icon">✓</span>
-          Order Placed Successfully!
+        <div className="success-toast-zomato">
+          <span className="check-icon">✓</span>
+          Added to Cart!
         </div>
       )}
       
-      {/* Card Image Section */}
-      <div className="card-image-section">
-        <div className="card-gradient-bg"></div>
-        <div className="sweet-emoji-large">{sweet.image}</div>
+      {/* Card Image - Zomato Style */}
+      <div className="zomato-card-image">
+        {!imageError && sweet.image.startsWith('http') ? (
+          <img 
+            src={sweet.image} 
+            alt={sweet.name}
+            onError={() => setImageError(true)}
+            loading="lazy"
+          />
+        ) : (
+          <div className="fallback-emoji">{sweet.image.startsWith('http') ? '🍬' : sweet.image}</div>
+        )}
         
-        {/* Badges */}
+        <div className="image-overlay"></div>
+        
+        {/* Badges - Zomato Style */}
         {sweet.quantity === 0 && (
-          <div className="badge badge-sold-out">SOLD OUT</div>
+          <div className="zomato-badge sold-out-badge">SOLD OUT</div>
         )}
         {isLowStock && (
-          <div className="badge badge-low-stock">Only {sweet.quantity} Left!</div>
+          <div className="zomato-badge hurry-badge">⚡ HURRY! {sweet.quantity} LEFT</div>
         )}
-        
-        {/* Category Chip */}
-        <div className="category-chip">{sweet.category}</div>
+        {discount > 0 && (
+          <div className="zomato-badge discount-badge">{discount}% OFF</div>
+        )}
       </div>
 
-      {/* Card Content */}
-      <div className="card-content-premium">
-        <div className="card-header-premium">
-          <h3 className="sweet-title-premium">{sweet.name}</h3>
-          <div className="price-tag-premium">
-            <span className="currency">₹</span>
-            <span className="price-amount">{sweet.price}</span>
+      {/* Card Content - Zomato Style */}
+      <div className="zomato-card-content">
+        {/* Header */}
+        <div className="card-top">
+          <div>
+            <h3 className="zomato-sweet-name">{sweet.name}</h3>
+            <div className="zomato-category-row">
+              <span className="zomato-category">{sweet.category}</span>
+              <span className="zomato-rating">⭐ 4.5</span>
+            </div>
+          </div>
+          <div className="zomato-price-tag">
+            ₹{sweet.price}
           </div>
         </div>
 
-        <p className="sweet-description-premium">{sweet.description}</p>
+        <p className="zomato-description">{sweet.description}</p>
 
-        {/* Stock Info */}
-        <div className="stock-info-bar">
-          <div className="stock-label">
-            <span className="stock-icon">📦</span>
-            Stock Available
+        {/* Stock Bar - Vibrant */}
+        {sweet.quantity > 0 && (
+          <div className="zomato-stock-bar">
+            <div className="stock-progress">
+              <div 
+                className="stock-fill-zomato"
+                style={{ 
+                  width: `${Math.min((sweet.quantity / 25) * 100, 100)}%`,
+                  background: sweet.quantity < 5 ? 'linear-gradient(90deg, #FF5A5F, #E23744)' : 'linear-gradient(90deg, #48C479, #36A864)'
+                }}
+              ></div>
+            </div>
+            <span className="stock-text">{sweet.quantity} in stock</span>
           </div>
-          <div className="stock-bar">
-            <div 
-              className="stock-fill"
-              style={{ 
-                width: `${Math.min((sweet.quantity / 20) * 100, 100)}%`,
-                backgroundColor: sweet.quantity < 5 ? '#f44336' : '#4caf50'
-              }}
-            ></div>
-          </div>
-          <span className="stock-count">{sweet.quantity} units</span>
-        </div>
+        )}
 
-        {/* Purchase Section */}
+        {/* Purchase Controls - Zomato Style */}
         {sweet.quantity > 0 ? (
-          <div className="purchase-section-premium">
-            <div className="quantity-control-premium">
+          <div className="zomato-purchase-section">
+            <div className="zomato-quantity-box">
               <button
-                className="qty-btn-premium minus"
+                className="qty-btn-zomato"
                 onClick={() => handleQuantityChange(quantity - 1)}
-                disabled={quantity <= 1 || isPurchasing}
-                aria-label="Decrease quantity"
+                disabled={quantity <= 1 || isAdding}
               >
                 −
               </button>
-              <div className="qty-display">
-                <input
-                  type="number"
-                  min="1"
-                  max={sweet.quantity}
-                  value={quantity}
-                  onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
-                  className="qty-input-premium"
-                  disabled={isPurchasing}
-                  aria-label="Quantity"
-                />
-              </div>
+              <span className="qty-value-zomato">{quantity}</span>
               <button
-                className="qty-btn-premium plus"
+                className="qty-btn-zomato"
                 onClick={() => handleQuantityChange(quantity + 1)}
-                disabled={quantity >= sweet.quantity || isPurchasing}
-                aria-label="Increase quantity"
+                disabled={quantity >= sweet.quantity || isAdding}
               >
                 +
               </button>
             </div>
 
             <button
-              className="purchase-btn-premium"
-              onClick={handlePurchase}
-              disabled={isPurchasing}
+              className="zomato-add-btn"
+              onClick={handleAddToCart}
+              disabled={isAdding}
             >
-              {isPurchasing ? (
+              {isAdding ? (
                 <>
-                  <span className="btn-spinner"></span>
-                  Processing...
+                  <span className="spinner-zomato"></span>
+                  Adding...
                 </>
               ) : (
                 <>
-                  <span className="cart-icon">🛒</span>
-                  Add to Cart
+                  ADD TO CART · ₹{totalPrice}
                 </>
               )}
             </button>
-
-            <div className="total-price-display">
-              <span className="total-label">Total:</span>
-              <span className="total-amount">₹{totalPrice.toLocaleString('en-IN')}</span>
-            </div>
           </div>
         ) : (
-          <div className="sold-out-section">
-            <button className="sold-out-btn" disabled>
-              <span>😞</span>
-              Currently Unavailable
-            </button>
-            <p className="notify-text">We'll restock soon!</p>
-          </div>
+          <button className="zomato-sold-out-btn" disabled>
+            CURRENTLY UNAVAILABLE
+          </button>
         )}
       </div>
     </div>
