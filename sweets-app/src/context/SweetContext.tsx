@@ -1,6 +1,4 @@
 import React, { createContext, useContext, useState, type ReactNode } from 'react'
-import axios from 'axios';
-import api from '../api';
 
 export interface Sweet {
   id: number
@@ -38,65 +36,31 @@ const initialSweets: Sweet[] = [
 ]
 
 export function SweetProvider({ children }: { children: ReactNode }) {
-  const [sweets, setSweets] = useState<Sweet[]>([]);
+  // Use mock data instead of backend API
+  const [sweets, setSweets] = useState<Sweet[]>(initialSweets);
 
-  // Fetch sweets from backend API
-  const fetchSweets = async () => {
-    try {
-      const res = await api.get('/api/sweets');
-      setSweets(res.data);
-    } catch (err) {
-      alert('Failed to fetch sweets');
-    }
+  // Add sweet using local state (no backend)
+  const addSweet = (sweet: Omit<Sweet, 'id'>) => {
+    const newSweet = {
+      ...sweet,
+      id: Math.max(...sweets.map(s => s.id), 0) + 1
+    };
+    setSweets((prev) => [...prev, newSweet]);
   };
 
-  // Add sweet using backend API (JWT required)
-  const addSweet = async (sweet: Omit<Sweet, 'id'>) => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await api.post('/api/sweets', sweet, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSweets((prev) => [...prev, res.data]);
-    } catch (err) {
-      alert('Failed to add sweet');
-    }
+  // Update sweet using local state (no backend)
+  const updateSweet = (id: number, updates: Partial<Sweet>) => {
+    setSweets((prev) => prev.map((sweet) => 
+      sweet.id === id ? { ...sweet, ...updates } : sweet
+    ));
   };
 
-  // Update sweet using backend API (JWT required)
-  const updateSweet = async (id: number, updates: Partial<Sweet>) => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await api.put(`/api/sweets/${id}`, updates, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSweets((prev) => prev.map((sweet) => sweet.id === id ? res.data : sweet));
-    } catch (err) {
-      alert('Failed to update sweet');
-    }
-  };
-
-  // Delete sweet using backend API (JWT required)
-  const deleteSweet = async (id: number) => {
-    try {
-      const token = localStorage.getItem('token');
-      await api.delete(`/api/sweets/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSweets((prev) => prev.filter((sweet) => sweet.id !== id));
-    } catch (err) {
-      alert('Failed to delete sweet');
-    }
+  // Delete sweet using local state (no backend)
+  const deleteSweet = (id: number) => {
+    setSweets((prev) => prev.filter((sweet) => sweet.id !== id));
   };
 
   const getSweet = (id: number) => sweets.find((sweet) => sweet.id === id);
-
-  // Fetch sweets on mount
-  React.useEffect(() => {
-    fetchSweets();
-  }, []);
-
-  // Only export Axios-based CRUD
 
   return (
     <SweetContext.Provider value={{ sweets, addSweet, updateSweet, deleteSweet, getSweet }}>
